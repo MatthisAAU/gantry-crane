@@ -1,0 +1,28 @@
+% 1. Daten extrahieren (wie besprochen)
+y = squeeze(out.volt.Data); 
+t = out.volt.Time;
+
+% 2. Parameter bestimmen
+L = length(y);              % Länge des Signals
+dt = t(2) - t(1);           % Zeitschritt (Sampling Intervall)
+fs = 1/dt;                  % Abtastfrequenz
+
+% 3. FFT berechnen
+Y = fft(y);
+
+% 4. Zweiseitiges Spektrum berechnen, dann das einseitige ableiten
+% Wir nehmen den Betrag (abs) für die Amplitude und normieren mit L
+P2 = abs(Y/L); 
+P1 = P2(1:L/2+1);           % Nur die erste Hälfte (positive Frequenzen)
+P1(2:end-1) = 2*P1(2:end-1); % Energie der negativen Frequenzen hinzufügen
+
+% 5. Frequenzvektor für die x-Achse definieren
+f = fs*(0:(L/2))/L;
+
+% 6. Plotten
+figure;
+plot(f, P1);
+title('Einseitiges Amplitudenspektrum von Volt');
+xlabel('Frequenz (Hz)');
+ylabel('|P1(f)|');
+grid on;
