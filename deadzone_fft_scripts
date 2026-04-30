@@ -1,0 +1,50 @@
+% fft of the poti noise
+
+load("noise_poti.mat")
+
+Ts = 0.01;
+fs = 1/Ts;
+
+x = poti_noise.Data;
+
+N = length(x);
+
+xdft = fft(x);
+xdft = xdft(1:floor(N/2)+1);
+psdx = (1/(fs*N)) * abs(xdft).^2;
+psdx(2:end-1) = 2*psdx(2:end-1);
+freq = 0:fs/length(x):fs/2;
+
+plot(freq,pow2db(psdx))
+grid on
+title("Periodogram Using FFT")
+xlabel("Frequency (Hz)")
+ylabel("Power/Frequency (dB/Hz)")
+
+%% dead zone script
+
+
+%volt_all =[volt_rev_flipped; volt];
+%speed_all =[speed_rev_flipped;speed];
+
+figure;
+plot(volt_all, speed_all);
+% 4. LaTeX Formatting & Axes properties
+set(gca, ...
+    'TickLabelInterpreter', 'latex', ...
+    'FontSize', 8, ... ...
+    'Box', 'on', ...
+    'LineWidth', 1.2);
+save("data_deadzone.mat", "volt_rev_flipped", "speed_rev_flipped")
+% Set the default interpreter for all text objects (titles, labels, etc.)
+set(groot, 'DefaultTextInterpreter', 'latex');
+
+% Set the default interpreter for axes tick labels
+set(groot, 'DefaultAxesTickLabelInterpreter', 'latex');
+
+% Set the default interpreter for legends
+set(groot, 'DefaultLegendInterpreter', 'latex');
+% Labels with LaTeX syntax
+xlabel('\textbf{Voltage}',  'FontSize', 12);
+ylabel('\textbf{Speed m/s}',  'FontSize', 12);
+grid on;
